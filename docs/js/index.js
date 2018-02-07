@@ -18,6 +18,7 @@ do {
 
   rp(options)
     .then(($) => {
+      //a terme dans un tableau
       console.log($('.poi_card-display-title').text());
       //Url
     })
@@ -25,9 +26,20 @@ do {
       console.log(err);
     });
 
-  i++;
-} while (i<5);
+    rp(options)
+      .then(($) => {
+        console.log($('.srp-no-results-text').text());
+        break;
+        //Url
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
+
+  i++;
+} while (i<50);
+console.log(i);
 
 function TabRestaurants()
 {

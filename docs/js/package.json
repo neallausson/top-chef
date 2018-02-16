@@ -1,0 +1,21 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "first init",
+  "main": "index.js",
+  "scripts": {
+    "test": "await"
+  },
+  "repository": {
+    "type": "git",
+    "url": "neallauson"
+  },
+  "keywords": [
+    "top-chef"
+  ],
+  "author": "neal lausson",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.0.0"
+  }
+}

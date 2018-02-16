@@ -26,7 +26,7 @@ do {
    .then(($) => {
      //a terme dans un tableau
      //console.log($('.poi_card-display-title').text());
-     console.log($('.poi-card-link').attr('href'));
+     //console.log($('.poi-card-link').attr('href'));
      list_restaurant[i-1]=$('.poi-card-link').attr('href');
 
      if ($('.srp-no-results-text').text().length > 15) {
@@ -37,11 +37,6 @@ do {
    .catch((err) => {
      console.log(err);
    });
-
-
-
-
-
 
  i++;
 } while (i<36);
@@ -62,9 +57,10 @@ for (var j = 0; j < list_restaurant.length; j++) {
 
   rp(options)
     .then(($) => {
-      list_objet_restaurant[j]={'nom':$('.poi_intro-display-title op-upper-var2__title').text(),
-                                'rue':$('.thoroughfare').text(),
-                                'ville':$('.postal-code').text()+' '+$('.locality').text(),
+      list_objet_restaurant[j]={'name':$('.poi_intro-display-title op-upper-var2__title').text(),
+                                'street':$('.thoroughfare').text(),
+                                'postalCode':$('.postal-code').text(),
+                                'town':$('.locality').text(),
                                 'style':$('.poi_intro-display-cuisines opt-upper__cuisines-info').text()}
     })
     .catch((err) => {
@@ -72,10 +68,29 @@ for (var j = 0; j < list_restaurant.length; j++) {
     });
 
 }
-function TabRestaurants()
-{
 
+for (var y = 0; y < list_objet_restaurant.length; y++) {
+  var options = {
+    uri: 'https://www.lafourchette.com/recherche/autocomplete?searchText='+ list_objet_restaurant[y]['name']+'&localeCode=fr',
+    transform: function (body) {
+      return cheerio.load(body);
+    }
+  };
+
+  rp(options)
+    .then(($) => {
+      //console.log($.text());
+      var object = JSON.parse($.text());
+      for (var k = 0; k < object['data']['restaurants'].length; k++) {
+        console.log(object['data']['restaurants'][k]['name']);
+      }
+      //console.log(object);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
+
 
 //TabRestaurants();
 

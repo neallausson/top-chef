@@ -14,26 +14,33 @@ let list_objet_restaurant = new Array();
 async function scrapAllPages()
 {
   let i = 1;
+  let j = 0;
   let bool =true;
 
   do {
     let data = await fetch(Url+i.toString());
     let html = await data.text();
     let real_data = await cheerio.load(html);
-
-
+    j--;
     if (real_data('.srp-no-results-text').text().length > 15) {
       bool= await false;
     }
     else{
       //console.log(real_data('.poi_card-display-title').text().trim());
 
-      list_restaurant_link[i-1]= await real_data('.poi-card-link').attr('href');
-      console.log(list_restaurant_link[i-1]);
+       real_data('.poi-card-link').each(
+        function(){
+          list_restaurant_link[i-1+j]=real_data(this).attr('href');
+          console.log(list_restaurant_link[i-1+j]);
+          j++;
+        }
+      );
+
     }
     i++
   } while (bool);
   console.log(list_restaurant_link.length);
+  scrapAllRestaurants();
 }
 
 async function scrapAllRestaurants()
@@ -44,18 +51,30 @@ async function scrapAllRestaurants()
     let data = await fetch('https://restaurant.michelin.fr'+list_restaurant_link[j]);
     let html = await data.text();
     let real_data = await cheerio.load(html);
-
-    list_objet_restaurant[j]= await{'name':real_data('.poi_intro-display-title op-upper-var2__title').text(),
+    let etoile = 0;
+    if (real_data('span.distinction-icon.icon-mr.icon-cotation3etoiles.red') != null) {
+      console.log(real_data('span.distinction-icon.icon-mr.icon-cotation3etoiles.red'));
+      etoile = 3;
+    }
+    else if (real_data('span.distinction-icon.icon-mr.icon-cotation2etoiles.red') != null) {
+      etoile = 2;
+    }
+    else if  (real_data('span.distinction-icon.icon-mr.icon-cotation1etoiles.red') != null) {
+      etoile = 1;
+    }
+    list_objet_restaurant[j]= await{'name':real_data('.poi_intro-display-title').text().trim(),
                               'street':real_data('.thoroughfare').text(),
                               'postalCode':real_data('.postal-code').text(),
                               'town':real_data('.locality').text(),
-                              'style':real_data('.poi_intro-display-cuisines opt-upper__cuisines-info').text()};
+                              'style':real_data('.poi_intro-display-cuisines').text().trim(),
+                              'etoile':etoile
+                            };
 
-    console.log(list_objet_restaurant[j]);
-    console.log('oui');
+    //console.log(list_objet_restaurant[j]);
+    //console.log('oui');
     j++;
   }
 }
 
 scrapAllPages();
-scrapAllRestaurants();
+//scrapAllRestaurants();

@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-
+const fs = require('fs');
 
 const rp = require('request-promise');
 const cheerio = require('cheerio');
@@ -53,7 +53,7 @@ async function scrapAllRestaurants()
     let real_data = await cheerio.load(html);
     let etoile = 0;
     if (real_data('span.distinction-icon.icon-mr.icon-cotation3etoiles.red') != null) {
-      console.log(real_data('span.distinction-icon.icon-mr.icon-cotation3etoiles.red'));
+      //console.log(real_data('span.distinction-icon.icon-mr.icon-cotation3etoiles.red'));
       etoile = 3;
     }
     else if (real_data('span.distinction-icon.icon-mr.icon-cotation2etoiles.red') != null) {
@@ -69,9 +69,9 @@ async function scrapAllRestaurants()
                               'style':real_data('.poi_intro-display-cuisines').text().trim(),
                               'etoile':etoile
                             };
-
-    //console.log(list_objet_restaurant[j]);
-    //console.log('oui');
+    fs.appendFile('objectRestaurant.json',JSON.stringify(list_objet_restaurant[j])+"\r\n", null, 2, function (err) {
+      if (err) throw err;
+    });
     j++;
   }
 }

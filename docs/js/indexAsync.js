@@ -5,6 +5,7 @@ const rp = require('request-promise');
 const cheerio = require('cheerio');
 
 
+
 let Url = 'https://restaurant.michelin.fr/restaurants/france/restaurants-1-etoile-michelin/restaurants-2-etoiles-michelin/restaurants-3-etoiles-michelin/page-'
 
 
@@ -30,7 +31,7 @@ async function scrapAllPages()
 
        real_data('.poi-card-link').each(
         function(){
-          list_restaurant_link[i-1+j]=real_data(this).attr('href');
+          list_restaurant_link[i-1+j]= await real_data(this).attr('href');
           console.log(list_restaurant_link[i-1+j]);
           j++;
         }
@@ -45,7 +46,6 @@ async function scrapAllPages()
 
 async function scrapAllRestaurants()
 {
-  console.log('oui');
   for (var j = 0; j < list_restaurant_link.length; j++) {
 
     let data = await fetch('https://restaurant.michelin.fr'+list_restaurant_link[j]);
@@ -69,11 +69,15 @@ async function scrapAllRestaurants()
                               'style':real_data('.poi_intro-display-cuisines').text().trim(),
                               'etoile':etoile
                             };
-    fs.appendFile('objectRestaurant.json',JSON.stringify(list_objet_restaurant[j])+"\r\n", null, 2, function (err) {
-      if (err) throw err;
-    });
+
+
     j++;
   }
+  fs.appendFile('ObjectRestaurant.json',JSON.stringify(list_objet_restaurant),null, function (err) {
+    if (err) throw err;
+  });
+  console.log(list_restaurant_link.length);
+
 }
 
 scrapAllPages();

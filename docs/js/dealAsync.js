@@ -82,7 +82,7 @@ async function scrapDeal()
        function(){
          saleType= real_data(this).text();
          //saleType = 'sale';
-         deal_lafourchette[y][compteur]=saleType;
+         deal_lafourchette[y]['sale'][compteur]=saleType;
          console.log(saleType);
          compteur++;
        });
@@ -91,7 +91,7 @@ async function scrapDeal()
 
 
   }
-  fs.appendFile('Deal.json',JSON.stringify(deal_lafourchette),null, function (err) {
+  fs.appendFile('deal.json',JSON.stringify(deal_lafourchette),null, function (err) {
     if (err) throw err;
   });
 }
